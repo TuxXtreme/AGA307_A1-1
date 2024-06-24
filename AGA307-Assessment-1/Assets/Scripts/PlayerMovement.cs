@@ -1,117 +1,37 @@
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder.Shapes;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public float speed = 5;
 
-    public CharacterController controller;
+    [Header("Running")]
+    public bool canRun = true;
+    public bool IsRunning { get; private set; }
+    public float runSpeed = 9;
+    public KeyCode runningKey = KeyCode.LeftShift;
+    Rigidbody rigidbody;
+    public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
-    public float speed = 12f;
-    public float gravity = -9.81f;
-    public float jumpHeight = 5f;
 
-    public Transform groundCheck;
-    public float groundDistance = 0.4f;
-    public LayerMask groundMask;
 
-    Vector3 velocity;
-    public bool isGrounded;
-
-    [Header("--- Projectile Settings ---")]
-    public Transform projectileSpawn;
-    public GameObject projectilePrefab;
-    public float projectileSpeed = 15f;
-    public int projectileLifeTime = 2;
-
-    [Header("--- Ray Casting ---")]
-    public int rayDistance = 10;
-    Ray ray = new Ray();
-    RaycastHit rayHit;
-
-    public GameObject sphere;
-
-    void Update()
+    void Awake()
     {
-
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f; 
-        }
-
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 move = transform.right * x + transform.forward * z;
-
-        controller.Move(move * speed * Time.deltaTime);
-
-        if(Input.GetButtonDown("Jump") && isGrounded)
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        velocity.y += gravity * Time.deltaTime;
-
-        controller.Move(velocity * Time.deltaTime);
-
-        // Projectile
-
-        if(Input.GetButtonDown("Fire1"))
-        {
-            Shoot();
-        }
-
-        void Shoot()
-        {
-            GameObject proj = Instantiate(projectilePrefab, projectileSpawn.position, projectileSpawn.rotation);
-            //porj velocity
-            proj.GetComponent<Rigidbody>().velocity = projectileSpawn.forward * projectileSpeed;
-            Destroy(proj, projectileLifeTime);
-        }
-
-
-
+        rigidbody = GetComponent<Rigidbody>();
     }
 
-    void OnTriggerStay(Collider other)
+    void FixedUpdate()
     {
-        if (other.CompareTag("Trigger"))
+        IsRunning = canRun && Input.GetKey(runningKey);
+
+        float targetMovingSpeed = IsRunning ? runSpeed : speed;
+        if (speedOverrides.Count > 0)
         {
-            //Increas the spheres scale by 0.01 on all axis
-            CastRay();
-        }
-    }
-
-
-
-    public void CastRay()
-    {
-        ray.origin = transform.position;
-        ray.direction = transform.forward;
-
-        if (Physics.Raycast(ray, out rayHit, rayDistance))
-        {
-            Debug.Log($"raycast is hitting {rayHit.collider.name}");
-            //Depending on the tag turn it 
-            if (rayHit.collider.tag == "Target")
-            {
-                Debug.Log("raycast is target");
-                rayHit.collider.GetComponent<MeshRenderer>().material.color = Color.red;
-
-                if (Input.GetKey(KeyCode.E))
-                {
-                    Debug.Log("E detected");
-                    sphere.transform.localScale += Vector3.one * 0.01f;
-                }
-            }
+            targetMovingSpeed = speedOverrides[speedOverrides.Count - 1]();
         }
 
+        Vector2 targetVelocity = new Vector2(Input.GetAxis("Horizontal") * targetMovingSpeed, Input.GetAxis("Vertical") * targetMovingSpeed);
 
+        rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);
     }
-
-
-
-
 }

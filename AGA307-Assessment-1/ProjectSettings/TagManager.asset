@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Projectile
   - Target
-  - Trigger
   layers:
   - Default
   - TransparentFX

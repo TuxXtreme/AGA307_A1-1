@@ -1,42 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Projectile : MonoBehaviour
 {
-    public GameObject projectile;
-    public GameObject target;
+    [Header("---Projectile Settings---")]
+    public float Velocity = 1000;
+    public Transform projectileSpawner;
+    public GameObject projectilePrefab;
+    public float projectileLifeTime = 5;
 
-    public int damageAmount = 20;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        
+        Velocity = 1000;
     }
-
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-       
-        
-    }
-    //shouldve done on collision enter
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Target")
-        {
-            //change the spheres colour to green
-            other.GetComponent<MeshRenderer>().material.color = Color.red;
-            //Destroy(other.gameObject, 1);
+        if (Input.GetMouseButtonDown(0))
+        { 
+            GameObject projectileInstance = Instantiate(projectilePrefab, projectileSpawner.position, projectileSpawner.rotation);
+            projectileInstance.GetComponent<Rigidbody>().AddForce(projectileSpawner.transform.forward * Velocity);
+            Destroy(projectileInstance, projectileLifeTime);
             
         }
-        HealthManager healthManager = other.GetComponent<HealthManager>();
-        if (healthManager != null)
-        {
-            healthManager.TakeDamage(damageAmount);
-        }
-
     }
 }
