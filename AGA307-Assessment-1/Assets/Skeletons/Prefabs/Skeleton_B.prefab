@@ -1445,8 +1445,8 @@ GameObject:
   - component: {fileID: 477336}
   - component: {fileID: 9532452}
   - component: {fileID: -1271290708321548417}
-  - component: {fileID: -2543104367191865234}
   - component: {fileID: -259081991446350927}
+  - component: {fileID: -6164163750168434334}
   m_Layer: 0
   m_Name: Skeleton_B
   m_TagString: Untagged
@@ -1505,28 +1505,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 029f486770eddb644add9cddcfc40d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   Health: 2
---- !u!65 &-2543104367191865234
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165576}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &-259081991446350927
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1554,6 +1534,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 90
   m_CollisionDetection: 0
+--- !u!136 &-6164163750168434334
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165576}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.676497
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.72231317, z: 0}
 --- !u!1 &166360
 GameObject:
   m_ObjectHideFlags: 0

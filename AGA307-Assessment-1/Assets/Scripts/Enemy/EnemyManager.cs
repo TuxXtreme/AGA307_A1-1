@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Singleton<EnemyManager>
 {
     public Transform[] spawnPoints = new Transform[8];
     public GameObject[] skeletons = new GameObject[8];
@@ -13,6 +13,12 @@ public class EnemyManager : MonoBehaviour
     {
         Count();
         Sum();
+        GameEvents.EnemyDie += EnemyDied;
+        ShuffleList(enemies);
+    }
+    private void OnDestroy()
+    {
+        GameEvents.EnemyDie -= EnemyDied;
     }
 
     private void Update()
@@ -42,11 +48,22 @@ public class EnemyManager : MonoBehaviour
     }
         void SpawnEnemy()
         {
-            for (int i = 0; i < spawnPoints.Length;i++) 
-            { 
-                GameObject enemy = Instantiate(skeletons[0], spawnPoints[i].position, spawnPoints[i].rotation);
-                enemies.Add(enemy);
+            if (enemies.Count <= 1)
+            {
+                for (int i = 0; i < spawnPoints.Length; i++)
+                {
+                    GameObject enemy = Instantiate(skeletons[Random.Range(0, 9)], spawnPoints[i].position, spawnPoints[i].rotation);
+                    enemies.Add(enemy);
+                }
             }
-            print("Enemy Count: " + enemies.Count);
+                else
+                {
+                    print("Enemy Count: " + enemies.Count);
+                }
         }
+    void EnemyDied(EnemyBeh e)
+    {
+        enemies.Remove(e.gameObject);
+        Debug.Log(enemies.Count);
+    }
 }

@@ -17,10 +17,19 @@ public class EnemyBeh : MonoBehaviour
         {
             StartCoroutine(Move());
         }
-    
-        hit();
+    if(Input.GetKeyDown(KeyCode.H))
+        {
+            hit();
+        }
     }
-
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.collider.tag == "Projectile")
+        {
+            hit();
+            Destroy(GetComponent<MeshRenderer>());
+        }
+    }
     void SetUp()
     {
         switch(type)
@@ -38,7 +47,20 @@ public class EnemyBeh : MonoBehaviour
     }
     void hit()
     {
+        GameEvents.OneEnemyHit(this);
+        Health-= 5;
+        if(Health <= 0)
+        {
+            Die();
+        }
+    }
 
+    void Die()
+    {
+        GameEvents.OneEnemyDie(this);
+        StopAllCoroutines();
+        GameManeger.instance.AddScore(100);
+        Destroy(this.gameObject);
     }
     IEnumerator Move()
     { 

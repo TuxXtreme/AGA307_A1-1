@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
-public class GameManeger : MonoBehaviour
+public class GameManeger : Singleton<GameManeger>
 {
+
+    [Header("---Score---")]
+    public float score = 0;
+
+
     [Header("---Game State---")]
     public GameState gamestate;
     public EnemyManager enemymanager;
@@ -12,10 +18,15 @@ public class GameManeger : MonoBehaviour
     public int scoreMultiplyer = 1;
     public GameDifficulty gameDifficulty = GameDifficulty.easy;
 
-    private void Start()
+    void Start()
     {
         StartGame();
         Difficulty();
+        GameEvents.EnemyHit += EnemyHit;
+    }
+    private void OnDestroy()
+    {
+        GameEvents.EnemyHit -= EnemyHit;
     }
     void Update()
     {
@@ -38,7 +49,14 @@ public class GameManeger : MonoBehaviour
             Hard();
 
     }
-
+    private void EnemyHit(EnemyBeh e)
+    {
+        AddScore(10);
+    }
+    public void AddScore(int scoreAdd)
+    {
+        score += scoreAdd * scoreMultiplyer;
+    }
     void Difficulty()
     {
         switch (gameDifficulty)
@@ -59,7 +77,6 @@ public class GameManeger : MonoBehaviour
         //enemymanager.SpawnEnemies();
         gamestate = GameState.Playing;
     }
-
     void PlayGame()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -67,7 +84,6 @@ public class GameManeger : MonoBehaviour
             gamestate = GameState.Paused;
         }
     }
-
     void PauseGame()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
@@ -75,27 +91,22 @@ public class GameManeger : MonoBehaviour
             gamestate = GameState.Playing;
         }
     }
-
     void WinGame()
     {
 
     }
-
     void LoseGame()
     {
 
     }
-
     void Easy()
     {
 
     }
-
     void Medium()
     {
 
     }
-
     void Hard()
     {
 
